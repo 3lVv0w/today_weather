@@ -17,9 +17,7 @@ Future main() async {
 
 class MyApp extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return new MyAppState();
-  }
+  State<StatefulWidget> createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
@@ -45,9 +43,6 @@ class MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
           backgroundColor: Colors.blueGrey,
-          // appBar: AppBar(
-          //   title: Text('Flutter Weather App'),
-          // ),
           body: Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             Expanded(
@@ -58,18 +53,17 @@ class MyAppState extends State<MyApp> {
                     padding: const EdgeInsets.all(8.0),
                     child: weatherData != null
                         ? Weather(weather: weatherData)
-                        : Container(),
+                        : Container(), // Empty container
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: isLoading
                         ? CircularProgressIndicator(
                             strokeWidth: 2.0,
-                            valueColor:
-                                new AlwaysStoppedAnimation(Colors.white),
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
                           )
                         : IconButton(
-                            icon: new Icon(Icons.refresh),
+                            icon: Icon(Icons.refresh),
                             tooltip: 'Refresh',
                             onPressed: loadWeather,
                             color: Colors.white,

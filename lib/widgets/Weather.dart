@@ -14,14 +14,14 @@ class Weather extends StatelessWidget {
       children: <Widget>[
         Text(weather.name, style: new TextStyle(color: Colors.white)),
         Text(weather.main,
-            style: new TextStyle(color: Colors.white, fontSize: 32.0)),
+            style: TextStyle(color: Colors.white, fontSize: 32.0)),
         Text('${weather.temp.toString()}°F',
-            style: new TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.white)),
         Image.network('https://openweathermap.org/img/w/${weather.icon}.png'),
         Text(new DateFormat.yMMMd().format(weather.date),
             style: new TextStyle(color: Colors.white)),
         Text(new DateFormat.Hm().format(weather.date),
-            style: new TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.white)),
       ],
     );
   }
