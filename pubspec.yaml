@@ -20,10 +20,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  http: ^0.12.0+2
-  location: ^1.4.1
-  flutter_dotenv: ^2.0.3
-  intl: ^0.15.6
+  dio: ^3.0.9
+  location: ^2.5.3
+  flutter_dotenv: ^2.1.0
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:
