@@ -4,15 +4,17 @@ import 'package:today_weather/models/weather_data.dart';
 
 class Weather extends StatelessWidget {
   final WeatherData weather;
+  final Color color;
 
   Weather({
-    Key key,
     @required this.weather,
-  }) : super(key: key);
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
           weather.name,
@@ -26,7 +28,9 @@ class Weather extends StatelessWidget {
           '${weather.temp.toString()}°F',
           style: TextStyle(color: Colors.white),
         ),
-        Image.network('https://openweathermap.org/img/w/${weather.icon}.png'),
+        Image.network(
+          'https://openweathermap.org/img/w/${weather.icon}.png',
+        ),
         Text(
           DateFormat.yMMMd().format(weather.date),
           style: TextStyle(color: Colors.white),

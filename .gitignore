@@ -70,3 +70,5 @@
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 .env
+pubspec.lock
+.flutter-plugins-dependencies

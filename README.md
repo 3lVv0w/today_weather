@@ -2,17 +2,29 @@
 
 # today_weather
 
-A new Flutter project.
+today_weather is the example project to use in flutter training, to demostrate hot to build an application using simple flutter widget system, combine with setState funtionality
+
+Objective: understanding code structure, refactor code, setState.
+
+Code Complexity: beginner -> intermediate
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisite
 
-A few resources to get you started if this is your first Flutter project:
+- an android emulator with API >= 21
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Steps
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Clone source code from github
+  -> git clone https://github.com/3lVv0w/today_weather.git
+- cd today_weather
+- Take a look at the source code
+- Create an .env file
+- GET an API KEY https://openweathermap.org/
+- to test an API In POSTMAN https://getpostman.com -> https://api.openweathermap.org/data/2.5/weather?APPID=${apiKey}&lat=12.67893&lon=101.133118
+-
+
+## Notice
+
+Working on update on iOS14 - unable to deploy on the device

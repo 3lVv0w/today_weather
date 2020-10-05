@@ -62,6 +62,7 @@ class TodayWeatherState extends State<TodayWeather> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              // TODO: Refactor this section into widgets
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +77,7 @@ class TodayWeatherState extends State<TodayWeather> {
                 ),
               ),
               _refreshButton(),
+              // TODO: Refactor this section into widgets
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -102,7 +104,7 @@ class TodayWeatherState extends State<TodayWeather> {
 
   loadWeather() async {
     String apiKey = DotEnv().env['API_KEY'];
-
+    print('1');
     setState(() {
       isLoading = true;
     });
@@ -117,9 +119,9 @@ class TodayWeatherState extends State<TodayWeather> {
       }
 
       _permissionGranted = await location.hasPermission();
-      if (_permissionGranted == PermissionStatus.DENIED) {
+      if (_permissionGranted == PermissionStatus.denied) {
         _permissionGranted = await location.requestPermission();
-        if (_permissionGranted != PermissionStatus.GRANTED) {
+        if (_permissionGranted != PermissionStatus.granted) {
           return;
         }
       }
@@ -141,38 +143,22 @@ class TodayWeatherState extends State<TodayWeather> {
     if (location != null) {
       final lat = _locationData.latitude;
       final lon = _locationData.longitude;
-
-      _fetchAndSetWeathergData(apiKey, lat, lon);
+      // TODO: add Await to each function here to get the number print in the order
+      _fetchAndSetWeatherData(apiKey, lat, lon);
       _fetchAndSetForcastingData(apiKey, lat, lon);
     }
-
+    print('4');
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> _fetchAndSetForcastingData(
+  Future<void> _fetchAndSetWeatherData(
     String apiKey,
     double lat,
     double lon,
   ) async {
-    final forecastResponse = await dio.get(
-      'https://api.openweathermap.org/data/2.5/forecast?APPID=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
-    );
-    if (forecastResponse.statusCode == 200) {
-      return setState(() {
-        forecastData = ForecastData.fromJson(forecastResponse.data);
-      });
-    } else {
-      print(forecastResponse.statusCode);
-    }
-  }
-
-  Future<void> _fetchAndSetWeathergData(
-    String apiKey,
-    double lat,
-    double lon,
-  ) async {
+    print('2');
     final weatherResponse = await dio.get(
       'https://api.openweathermap.org/data/2.5/weather?APPID=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
     );
@@ -182,6 +168,24 @@ class TodayWeatherState extends State<TodayWeather> {
       });
     } else {
       print(weatherResponse.statusCode);
+    }
+  }
+
+  Future<void> _fetchAndSetForcastingData(
+    String apiKey,
+    double lat,
+    double lon,
+  ) async {
+    print('3');
+    final forecastResponse = await dio.get(
+      'https://api.openweathermap.org/data/2.5/forecast?APPID=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
+    );
+    if (forecastResponse.statusCode == 200) {
+      return setState(() {
+        forecastData = ForecastData.fromJson(forecastResponse.data);
+      });
+    } else {
+      print(forecastResponse.statusCode);
     }
   }
 }

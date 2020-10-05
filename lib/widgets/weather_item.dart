@@ -6,9 +6,8 @@ class WeatherItem extends StatelessWidget {
   final WeatherData weather;
 
   WeatherItem({
-    Key key,
     @required this.weather,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

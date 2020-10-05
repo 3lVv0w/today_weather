@@ -19,9 +19,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^0.1.2
-  dio: ^3.0.9
-  location: ^2.5.3
+  cupertino_icons: ^1.0.0
+  dio: ^3.0.10
+  location: ^3.0.2
   flutter_dotenv: ^2.1.0
   intl: ^0.16.1
 
