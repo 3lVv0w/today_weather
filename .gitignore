@@ -72,3 +72,11 @@
 .env
 pubspec.lock
 .flutter-plugins-dependencies
+
+android/.project
+android/app/.project
+android/.settings
+android/app/.settings
+
+ios/build
+ios/Flutter/.last_build_id
