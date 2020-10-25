@@ -13,6 +13,7 @@ Code Complexity: beginner -> intermediate
 ### Prerequisite
 
 - an android emulator with API >= 21
+- iOS device with iOS 9 and above
 
 ### Steps
 
@@ -24,7 +25,3 @@ Code Complexity: beginner -> intermediate
 - GET an API KEY https://openweathermap.org/
 - to test an API In POSTMAN https://getpostman.com -> https://api.openweathermap.org/data/2.5/weather?APPID=${apiKey}&lat=12.67893&lon=101.133118
 -
-
-## Notice
-
-Working on update on iOS14 - unable to deploy on the device
