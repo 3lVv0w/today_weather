@@ -6,11 +6,11 @@ class WeatherData {
   final String icon;
 
   WeatherData({
-    this.date,
-    this.name,
-    this.temp,
-    this.main,
-    this.icon,
+    required this.date,
+    required this.name,
+    required this.temp,
+    required this.main,
+    required this.icon,
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {

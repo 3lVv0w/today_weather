@@ -3,10 +3,12 @@ import 'package:today_weather/models/weather_data.dart';
 class ForecastData {
   final List<dynamic> list;
 
-  ForecastData({this.list});
+  ForecastData({
+    required this.list,
+  });
 
   factory ForecastData.fromJson(Map<String, dynamic> json) {
-    List list = List();
+    List? list = [];
 
     for (dynamic e in json['list']) {
       WeatherData w = WeatherData(

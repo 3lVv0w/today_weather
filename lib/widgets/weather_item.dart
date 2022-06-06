@@ -4,9 +4,11 @@ import 'package:today_weather/models/weather_data.dart';
 
 class WeatherItem extends StatelessWidget {
   final WeatherData weather;
+  final Color color;
 
   WeatherItem({
-    @required this.weather,
+    required this.weather,
+    required this.color,
   });
 
   @override

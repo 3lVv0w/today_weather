@@ -36,5 +36,9 @@
 	<string>I need it </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Because</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>
