@@ -5,20 +5,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:today_weather/models/forecast_data.dart';
 import 'package:today_weather/models/weather_data.dart';
+import 'package:today_weather/widgets/current_weather_section.dart';
+import 'package:today_weather/widgets/refresh_button.dart';
 import 'package:today_weather/widgets/weather.dart';
 import 'package:today_weather/widgets/weather_item.dart';
 
 class TodayWeather extends StatefulWidget {
+  const TodayWeather({super.key});
+
   @override
-  State<StatefulWidget> createState() => TodayWeatherState();
+  State<StatefulWidget> createState() => _TodayWeatherState();
 }
 
-class TodayWeatherState extends State<TodayWeather> {
+class _TodayWeatherState extends State<TodayWeather> {
+  // Variables
   bool isLoading = false;
   WeatherData? weatherData;
   ForecastData? forecastData;
   Location location = Location();
-  bool? _serviceEnabled;
+
+  bool? _isServiceNotEnabled;
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
   String? error;
@@ -31,79 +37,55 @@ class TodayWeatherState extends State<TodayWeather> {
     loadWeather();
   }
 
-  Widget _refreshButton() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: isLoading
-          ? CircularProgressIndicator(
-              strokeWidth: 2.0,
-              valueColor: AlwaysStoppedAnimation(Colors.white),
-            )
-          : IconButton(
-              icon: Icon(Icons.refresh),
-              tooltip: 'Refresh',
-              onPressed: loadWeather,
-              color: Colors.white,
-            ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Weather App',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.blueGrey,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // TODO: Refactor this section into widgets
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: weatherData != null
-                          ? Weather(weather: weatherData!)
-                          : Container(), // Empty container
-                    ),
-                  ],
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // TODO: Refactor this section into widgets
+                CurrentWeather(
+                  weatherData: weatherData,
                 ),
-              ),
-              _refreshButton(),
-              // TODO: Refactor this section into widgets
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                RefreshButton(
+                  isLoading: isLoading,
+                  onPressed: () => loadWeather(),
+                ),
+                // TODO: Refactor this section into widgets
+                SafeArea(
                   child: Container(
+                    margin: const EdgeInsets.all(8.0),
                     height: 200.0,
-                    child: forecastData != null
-                        ? ListView.builder(
-                            itemCount: forecastData!.list.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => WeatherItem(
-                              weather: forecastData!.list.elementAt(index),
-                              color: Colors.white,
-                            ),
-                          )
-                        : Container(),
+                    child: Visibility(
+                      visible: forecastData != null,
+                      child: ListView.builder(
+                        itemCount: forecastData?.list.length ?? 0,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) => WeatherItem(
+                          weather: forecastData?.list[index],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  loadWeather() async {
+  void loadWeather() async {
     String apiKey = dotenv.env["API_KEY"]!;
     print('1');
     setState(() {
@@ -111,10 +93,10 @@ class TodayWeatherState extends State<TodayWeather> {
     });
 
     try {
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled!) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled!) {
+      _isServiceNotEnabled = await location.serviceEnabled();
+      if (!_isServiceNotEnabled!) {
+        _isServiceNotEnabled = await location.requestService();
+        if (!_isServiceNotEnabled!) {
           return;
         }
       }
@@ -130,7 +112,7 @@ class TodayWeatherState extends State<TodayWeather> {
       _locationData = await location.getLocation();
 
       error = null;
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, stackTrace) {
       print("land");
       if (e.code == 'PERMISSION_DENIED') {
         error = 'Permission denied';
@@ -145,11 +127,11 @@ class TodayWeatherState extends State<TodayWeather> {
     print(_locationData);
 
     if (_locationData != null) {
-      final lat = _locationData!.latitude;
-      final lon = _locationData!.longitude;
+      final double? lat = _locationData!.latitude;
+      final double? lon = _locationData!.longitude;
       // TODO: add Await to each function here to get the number print in the order
-      _fetchAndSetWeatherData(apiKey, lat!, lon!);
-      _fetchAndSetForcastingData(apiKey, lat, lon);
+      await _fetchAndSetWeatherData(apiKey, lat, lon);
+      await _fetchAndSetForcastingData(apiKey, lat, lon);
     }
     print('4');
     setState(() {
@@ -159,8 +141,8 @@ class TodayWeatherState extends State<TodayWeather> {
 
   Future<void> _fetchAndSetWeatherData(
     String apiKey,
-    double lat,
-    double lon,
+    double? lat,
+    double? lon,
   ) async {
     print('2');
     final weatherResponse = await dio.get(
@@ -177,12 +159,12 @@ class TodayWeatherState extends State<TodayWeather> {
 
   Future<void> _fetchAndSetForcastingData(
     String apiKey,
-    double lat,
-    double lon,
+    double? lat,
+    double? lon,
   ) async {
     print('3');
     final forecastResponse = await dio.get(
-      'https://api.openweathermap.org/data/2.5/forecast?appid=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
+      'https://api.openweathermap.org/data/2.5/forecast?appid=$apiKey&lat=${lat?.toString()}&lon=${lon?.toString()}',
     );
     if (forecastResponse.statusCode == 200) {
       return setState(() {
