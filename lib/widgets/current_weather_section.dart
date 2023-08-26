@@ -13,6 +13,7 @@ class CurrentWeather extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      flex: 2,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Visibility(

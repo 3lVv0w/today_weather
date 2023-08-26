@@ -6,9 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:today_weather/models/forecast_data.dart';
 import 'package:today_weather/models/weather_data.dart';
 import 'package:today_weather/widgets/current_weather_section.dart';
+import 'package:today_weather/widgets/forecast_weather_section.dart';
 import 'package:today_weather/widgets/refresh_button.dart';
-import 'package:today_weather/widgets/weather.dart';
-import 'package:today_weather/widgets/weather_item.dart';
 
 class TodayWeather extends StatefulWidget {
   const TodayWeather({super.key});
@@ -61,22 +60,9 @@ class _TodayWeatherState extends State<TodayWeather> {
                   onPressed: () => loadWeather(),
                 ),
                 // TODO: Refactor this section into widgets
-                SafeArea(
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    height: 200.0,
-                    child: Visibility(
-                      visible: forecastData != null,
-                      child: ListView.builder(
-                        itemCount: forecastData?.list.length ?? 0,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => WeatherItem(
-                          weather: forecastData?.list[index],
-                        ),
-                      ),
-                    ),
-                  ),
-                )
+                ForecaseWeaterSection(
+                  forecastData: forecastData,
+                ),
               ],
             ),
           ),
@@ -111,6 +97,16 @@ class _TodayWeatherState extends State<TodayWeather> {
 
       _locationData = await location.getLocation();
 
+      print(_locationData);
+
+      final double? lat = _locationData!.latitude;
+      final double? lon = _locationData!.longitude;
+      // TODO: add Await to each function here to get the number print in the order
+      weatherData = await _fetchAndSetWeatherData(apiKey, lat, lon);
+      forecastData = await _fetchAndSetForcastingData(apiKey, lat, lon);
+
+      print('4');
+
       error = null;
     } on PlatformException catch (e, stackTrace) {
       print("land");
@@ -124,22 +120,12 @@ class _TodayWeatherState extends State<TodayWeather> {
       _locationData = null;
     }
 
-    print(_locationData);
-
-    if (_locationData != null) {
-      final double? lat = _locationData!.latitude;
-      final double? lon = _locationData!.longitude;
-      // TODO: add Await to each function here to get the number print in the order
-      await _fetchAndSetWeatherData(apiKey, lat, lon);
-      await _fetchAndSetForcastingData(apiKey, lat, lon);
-    }
-    print('4');
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> _fetchAndSetWeatherData(
+  Future<WeatherData?> _fetchAndSetWeatherData(
     String apiKey,
     double? lat,
     double? lon,
@@ -149,15 +135,14 @@ class _TodayWeatherState extends State<TodayWeather> {
       'https://api.openweathermap.org/data/2.5/weather?appid=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
     );
     if (weatherResponse.statusCode == 200) {
-      return setState(() {
-        weatherData = WeatherData.fromJson(weatherResponse.data);
-      });
+      return weatherData = WeatherData.fromJson(weatherResponse.data);
     } else {
       print(weatherResponse.statusCode);
+      return null;
     }
   }
 
-  Future<void> _fetchAndSetForcastingData(
+  Future<ForecastData?> _fetchAndSetForcastingData(
     String apiKey,
     double? lat,
     double? lon,
@@ -167,11 +152,10 @@ class _TodayWeatherState extends State<TodayWeather> {
       'https://api.openweathermap.org/data/2.5/forecast?appid=$apiKey&lat=${lat?.toString()}&lon=${lon?.toString()}',
     );
     if (forecastResponse.statusCode == 200) {
-      return setState(() {
-        forecastData = ForecastData.fromJson(forecastResponse.data);
-      });
+      return forecastData = ForecastData.fromJson(forecastResponse.data);
     } else {
       print(forecastResponse.statusCode);
+      return null;
     }
   }
 }

@@ -8,8 +8,8 @@ class Weather extends StatelessWidget {
 
   const Weather({
     super.key,
-    required this.weather,
-    this.color,
+    this.weather,
+    this.color = Colors.white,
   });
 
   @override
@@ -19,15 +19,15 @@ class Weather extends StatelessWidget {
       children: <Widget>[
         Text(
           weather?.name ?? '-',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: color),
         ),
         Text(
           weather?.main ?? '-',
-          style: TextStyle(color: Colors.white, fontSize: 32.0),
+          style: TextStyle(color: color, fontSize: 28.0),
         ),
         Text(
           '${weather?.temp.toString()}°F',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: color),
         ),
         Image.network(
           'https://openweathermap.org/img/w/${weather?.icon}.png',
@@ -36,11 +36,11 @@ class Weather extends StatelessWidget {
           weather?.date != null
               ? DateFormat.yMMMd().format(weather!.date)
               : '-',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: color),
         ),
         Text(
           weather?.date != null ? DateFormat.Hm().format(weather!.date) : '-',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: color),
         ),
       ],
     );
