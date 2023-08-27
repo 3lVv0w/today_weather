@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:location/location.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:today_weather/controller/today_weather_controller.dart';
 import 'package:today_weather/models/forecast_data.dart';
 import 'package:today_weather/models/weather_data.dart';
 import 'package:today_weather/widgets/current_weather_section.dart';
@@ -21,19 +18,19 @@ class _TodayWeatherState extends State<TodayWeather> {
   bool isLoading = false;
   WeatherData? weatherData;
   ForecastData? forecastData;
-  Location location = Location();
-
-  bool? _isServiceNotEnabled;
-  PermissionStatus? _permissionGranted;
-  LocationData? _locationData;
-  String? error;
-
-  Dio dio = Dio();
+  Map<String, dynamic>? data;
 
   @override
   void initState() {
     super.initState();
-    loadWeather();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      data = await TodayWeatherController().loadWeather();
+      if (data != null && data!['code'] == 200) {
+        weatherData = data!['weatherData'];
+        forecastData = data!['forecastData'];
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -57,7 +54,21 @@ class _TodayWeatherState extends State<TodayWeather> {
                 ),
                 RefreshButton(
                   isLoading: isLoading,
-                  onPressed: () => loadWeather(),
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    data = await TodayWeatherController().loadWeather();
+                    if (data != null && data!['code'] == 200) {
+                      weatherData = data!['weatherData'];
+                      forecastData = data!['forecastData'];
+                    }
+
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
                 ),
                 // TODO: Refactor this section into widgets
                 ForecaseWeaterSection(
@@ -69,93 +80,5 @@ class _TodayWeatherState extends State<TodayWeather> {
         ),
       ),
     );
-  }
-
-  void loadWeather() async {
-    String apiKey = dotenv.env["API_KEY"]!;
-    print('1');
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      _isServiceNotEnabled = await location.serviceEnabled();
-      if (!_isServiceNotEnabled!) {
-        _isServiceNotEnabled = await location.requestService();
-        if (!_isServiceNotEnabled!) {
-          return;
-        }
-      }
-
-      _permissionGranted = await location.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await location.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          return;
-        }
-      }
-
-      _locationData = await location.getLocation();
-
-      print(_locationData);
-
-      final double? lat = _locationData!.latitude;
-      final double? lon = _locationData!.longitude;
-      // TODO: add Await to each function here to get the number print in the order
-      weatherData = await _fetchAndSetWeatherData(apiKey, lat, lon);
-      forecastData = await _fetchAndSetForcastingData(apiKey, lat, lon);
-
-      print('4');
-
-      error = null;
-    } on PlatformException catch (e, stackTrace) {
-      print("land");
-      if (e.code == 'PERMISSION_DENIED') {
-        error = 'Permission denied';
-      } else if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
-        error =
-            'Permission denied - please ask the user to enable it from the app settings';
-      }
-
-      _locationData = null;
-    }
-
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<WeatherData?> _fetchAndSetWeatherData(
-    String apiKey,
-    double? lat,
-    double? lon,
-  ) async {
-    print('2');
-    final weatherResponse = await dio.get(
-      'https://api.openweathermap.org/data/2.5/weather?appid=$apiKey&lat=${lat.toString()}&lon=${lon.toString()}',
-    );
-    if (weatherResponse.statusCode == 200) {
-      return weatherData = WeatherData.fromJson(weatherResponse.data);
-    } else {
-      print(weatherResponse.statusCode);
-      return null;
-    }
-  }
-
-  Future<ForecastData?> _fetchAndSetForcastingData(
-    String apiKey,
-    double? lat,
-    double? lon,
-  ) async {
-    print('3');
-    final forecastResponse = await dio.get(
-      'https://api.openweathermap.org/data/2.5/forecast?appid=$apiKey&lat=${lat?.toString()}&lon=${lon?.toString()}',
-    );
-    if (forecastResponse.statusCode == 200) {
-      return forecastData = ForecastData.fromJson(forecastResponse.data);
-    } else {
-      print(forecastResponse.statusCode);
-      return null;
-    }
   }
 }
