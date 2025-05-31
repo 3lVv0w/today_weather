@@ -35,7 +35,7 @@ class Weather extends StatelessWidget {
         Image.network(
           key: const Key('weather_icon'),
           'https://openweathermap.org/img/w/${weather?.icon}.png',
-           errorBuilder: (context, error, stackTrace) => 
+           errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.error, color: Colors.red, size: 50.0),
         ),
         Text(
