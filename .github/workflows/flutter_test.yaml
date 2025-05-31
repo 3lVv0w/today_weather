@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: crate .env file
+        run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
+
       - name: Run tests
         run: flutter test --coverage
 
