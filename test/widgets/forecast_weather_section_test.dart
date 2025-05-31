@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:today_weather/widgets/forecast_weather_section.dart';
 import 'package:today_weather/models/forecast_data.dart';
 import 'package:today_weather/models/weather_data.dart';
-import 'package:today_weather/widgets/weather.dart';
+import 'package:today_weather/widgets/weather_column.dart';
 
 void main() {
   group('ForecaseWeaterSection', () {
@@ -65,7 +65,7 @@ void main() {
       );
 
       // Should find Weather widget
-      expect(find.byType(Weather), findsOneWidget);
+      expect(find.byType(WeatherColumn), findsOneWidget);
     });
 
     testWidgets('ListView is horizontal', (WidgetTester tester) async {

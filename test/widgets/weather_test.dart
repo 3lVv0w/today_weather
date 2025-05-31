@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:today_weather/widgets/weather.dart';
+import 'package:today_weather/widgets/weather_column.dart';
 import 'package:today_weather/models/weather_data.dart';
 
 void main() {
@@ -9,7 +9,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: Weather(),
+            body: WeatherColumn(),
           ),
         ),
       );
@@ -31,7 +31,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: Weather(weather: weatherData),
+            body: WeatherColumn(weather: weatherData),
           ),
         ),
       );
@@ -56,7 +56,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: Weather(weather: weatherData, color: Colors.red),
+            body: WeatherColumn(weather: weatherData, color: Colors.red),
           ),
         ),
       );
@@ -82,7 +82,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: Weather(weather: weatherData),
+            body: WeatherColumn(weather: weatherData),
           ),
         ),
       );

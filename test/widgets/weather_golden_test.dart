@@ -1,6 +1,6 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:today_weather/models/weather_data.dart';
-import 'package:today_weather/widgets/weather.dart';
+import 'package:today_weather/widgets/weather_column.dart';
 
 void main() {
 
@@ -18,7 +18,7 @@ void main() {
       children: [
         GoldenTestScenario(
           name: 'Default Weather',
-          child: Weather(
+          child: WeatherColumn(
             weather: weatherData,
           ),
         ),

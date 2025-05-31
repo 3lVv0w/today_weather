@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:today_weather/models/weather_data.dart';
 
-class Weather extends StatelessWidget {
+class WeatherColumn extends StatelessWidget {
   final WeatherData? weather;
   final Color? color;
 
-  const Weather({
+  const WeatherColumn({
     super.key,
     this.weather,
     this.color = Colors.white,
