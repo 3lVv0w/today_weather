@@ -1,9 +1,9 @@
 name: Flutter Test Workflow
 
 on:
-    pull_request:
-        branches:
-            - master
+  push:
+    branches:
+      - '**'
 
 jobs:
   flutter_test:
