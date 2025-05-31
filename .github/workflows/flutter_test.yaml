@@ -7,7 +7,7 @@ on:
 
 jobs:
   flutter_test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,11 +22,11 @@ jobs:
         with:
           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
 
-      - name: Install dependencies
-        run: flutter pub get
-
       - name: crate .env file
         run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
+
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Run tests
         run: flutter test --coverage

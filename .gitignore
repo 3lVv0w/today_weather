@@ -85,3 +85,6 @@ ios/Flutter/.last_build_id
 .fvm/
 
 coverage/
+
+test/widgets/goldens/failures/
+test/widgets/goldens/macos/
