@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:today_weather/models/forecast_data.dart';
-import 'package:today_weather/widgets/Weather.dart';
+import 'package:today_weather/widgets/weather_column.dart';
 
 class ForecaseWeaterSection extends StatelessWidget {
   final ForecastData? forecastData;
@@ -29,7 +29,7 @@ class ForecaseWeaterSection extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Weather(
+                  child: WeatherColumn(
                     weather: forecastData?.list[index],
                     color: Colors.black,
                   ),

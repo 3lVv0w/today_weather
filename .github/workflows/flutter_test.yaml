@@ -1,0 +1,53 @@
+name: Flutter Test Workflow
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  flutter_test:
+    runs-on: macos-latest
+    steps:
+      # === Group 1: Setup ===
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install lcov and genhtml
+        run: brew install lcov
+
+      - name: Get Flutter FVM configuration
+        uses: kuhnroyal/flutter-fvm-config-action/setup@v3
+        with:
+          path: '.fvmrc'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+
+      - name: Create .env file
+        run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
+
+      # === Group 2: Build & Test ===
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test --coverage
+
+      - name: Generate HTML coverage report
+        run: |
+          genhtml coverage/lcov.info --output-directory coverage/html
+
+      # === Group 3: Deploy ===
+      - name: Deploy coverage report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage/
+          enable_jekyll: true
