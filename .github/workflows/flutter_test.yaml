@@ -6,11 +6,13 @@ on:
       - '**'
 
 jobs:
-  flutter_test:
+  set_up:
     runs-on: macos-latest
     steps:
+      # === Group 1: Setup ===
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
@@ -21,16 +23,21 @@ jobs:
       - name: Get Flutter FVM configuration
         uses: kuhnroyal/flutter-fvm-config-action/setup@v3
         with:
-         path: '.fvmrc'
+          path: '.fvmrc'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
 
-      - name: crate .env file
+      - name: Create .env file
         run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
 
+      # === Group 2: Build & Test ===
+  build_and_test:
+    runs-on: macos-latest
+    needs: set_up
+    steps:
       - name: Install dependencies
         run: flutter pub get
 
@@ -41,6 +48,11 @@ jobs:
         run: |
           genhtml coverage/lcov.info --output-directory coverage/html
 
+      # === Group 3: Deploy ===
+  deploy:
+    runs-on: macos-latest
+    needs: build_and_test
+    steps:
       - name: Deploy coverage report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
