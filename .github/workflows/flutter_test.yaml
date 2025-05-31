@@ -1,0 +1,42 @@
+name: Flutter Test Workflow
+
+on:
+    pull_request:
+        branches:
+            - master
+
+jobs:
+  flutter_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Flutter FVM configuration
+        uses: kuhnroyal/flutter-fvm-config-action/setup@v3
+        with:
+         path: '.fvmrc'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test --coverage
+
+      - name: Install lcov and genhtml
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Generate HTML coverage report
+        run: |
+          genhtml coverage/lcov.info --output-directory coverage/html
+
+      - name: Deploy coverage report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage/html

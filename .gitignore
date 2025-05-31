@@ -81,4 +81,7 @@ android/app/.settings
 ios/build
 ios/Flutter/.last_build_id
 
-.fvm
+# FVM Version Cache
+.fvm/
+
+coverage/

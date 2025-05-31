@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:today_weather/models/forecast_data.dart';
-import 'package:today_weather/widgets/Weather.dart';
+import 'package:today_weather/widgets/weather.dart';
 
 class ForecaseWeaterSection extends StatelessWidget {
   final ForecastData? forecastData;
