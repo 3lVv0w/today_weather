@@ -6,7 +6,7 @@ on:
       - '**'
 
 jobs:
-  set_up:
+  flutter_test:
     runs-on: macos-latest
     steps:
       # === Group 1: Setup ===
@@ -34,10 +34,6 @@ jobs:
         run: echo "API_KEY=${{ secrets.API_KEY }}" > .env
 
       # === Group 2: Build & Test ===
-  build_and_test:
-    runs-on: macos-latest
-    needs: set_up
-    steps:
       - name: Install dependencies
         run: flutter pub get
 
@@ -49,10 +45,6 @@ jobs:
           genhtml coverage/lcov.info --output-directory coverage/html
 
       # === Group 3: Deploy ===
-  deploy:
-    runs-on: macos-latest
-    needs: build_and_test
-    steps:
       - name: Deploy coverage report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
